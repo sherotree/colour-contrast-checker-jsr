@@ -19,7 +19,7 @@ jobs:
       - name: Verify confirmation
         if: inputs.confirm != 'publish'
         run: |
-          echo "ERROR: Publication not confirmed. Expected 'publish', got '${{ inputs.confirm }}'"  
+          echo "ERROR: Publication not confirmed. Expected 'publish', got '${{ inputs.confirm }}'"
           exit 1
 
       - uses: actions/checkout@v4
