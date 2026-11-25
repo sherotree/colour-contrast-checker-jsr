@@ -1,0 +1,40 @@
+name: Publish to JSR
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "publish" to confirm JSR publication'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: Publish to JSR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Verify confirmation
+        if: inputs.confirm != 'publish'
+        run: |
+          echo "ERROR: Publication not confirmed. Expected 'publish', got '${{ inputs.confirm }}'"  
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Run all checks
+        run: |
+          deno task fmt:check
+          deno task lint
+          deno task check
+          deno task test
+
+      - name: Publish to JSR
+        run: deno publish
